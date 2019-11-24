@@ -13,6 +13,7 @@ Grady Hillhouse 2015
 #include <cmath>
 #include <string>
 #include <fstream>
+#include <vector>
 //#include "Adafruit_MotorShield.h"
 //#include "Servo.h"
 
@@ -23,7 +24,7 @@ using namespace std;
 
 //Function prototypes
 float Convert_El_to_Servo(float elevation);
-string* Parse_TLE();
+vector<string> Parse_TLE();
 
 
 
@@ -99,16 +100,19 @@ int main()
     strcpy(monstr[12], "Dec");
 
     // Testing .txt parsing function
-    string* TLE = Parse_TLE();
+    vector<string> TLE = Parse_TLE();
     
     //ENTER TWO-LINE ELEMENT HERE
-    char longstr1[] = "1 25544U 98067A   19326.93033042  .00002023  00000-0  43408-4 0  9995";
-    char longstr2[] = "2 25544  51.6446 294.2531 0006312 312.3181 147.0684 15.50029279199880";
+    //char longstr1[] = "1 25544U 98067A   19326.93033042  .00002023  00000-0  43408-4 0  9995";
+    //char longstr2[] = "2 25544  51.6446 294.2531 0006312 312.3181 147.0684 15.50029279199880";
 
-    //char longstr1[] = TLE[0].c_str();
-    //char longstr2[] = TLE[1].c_str();
-
-    //delete[lines];
+    char longstr1[80];
+    char longstr2[80];
+    strcpy(longstr1, TLE[1].c_str());
+    strcpy(longstr2, TLE[2].c_str());
+    //longstr1[130] = TLE[0];
+    //longstr2[130] = TLE[1];
+    
 
     //ENTER SITE DETAILS HERE
     siteLat = 30.62; //+North (College Station)
@@ -310,7 +314,7 @@ float Convert_El_to_Servo(float elevation) {
     }
 }
 
-string* Parse_TLE()
+vector<string> Parse_TLE()
 {
     //file pointer
     fstream f_in;
@@ -319,21 +323,25 @@ string* Parse_TLE()
     f_in.open("TLE.txt");
 
     // read data from the file
-    string* lines = new string[2];
+    vector<string> lines;
+    string temp;
 
     if (f_in.is_open())
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
-            getline(f_in, lines[i]);
+            getline(f_in, temp);
+            lines.push_back(temp);
         }
-        printf("TLE Line 1: %s\n", lines[0].c_str());
-        printf("TLE Line 2: %s\n", lines[1].c_str());
+        printf("TLE Line 1: %s\n", lines[1].c_str());
+        printf("TLE Line 2: %s\n", lines[2].c_str());
     }
     else
     {
         printf("Unable to open file...\n");
     }
+
+    f_in.close();
 
     return lines;
 
