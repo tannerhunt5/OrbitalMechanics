@@ -32,7 +32,7 @@ int main()
     char typerun, typeinput, opsmode;
     gravconsttype  whichconst;
     
-    double sec, secC, jd, jdC, startmfe, stopmfe, deltamin;
+    double sec, secC, jd, jdC, startmfe, stopmfe, deltamin, dt;
     double tsince;
     double tumin, mu, radiusearthkm, xke, j2, j3, j4, j3oj2;
     double latlongh[3]; //lat, long in rad, h in km above ellipsoid
@@ -114,14 +114,14 @@ int main()
     //printf("            Time Since Epoch (min)            PosX            PosY            PosZ              Vx              Vy              Vz\n");
     printf("            Time             Lat            Long          Height           Range         Azimuth       Elevation\n");
     
-    
+    dt = 0;
     //BEGIN SATELLITE TRACKING
     while(1)
     {
-        
+        dt += .001;
         //RUN SGP4 AND COORDINATE TRANSFORMATION COMPUTATIONS
         jdC = getJulianFromUnix(time(NULL));
-        tsince = (jdC - jd) * 24.0 * 60.0;
+        tsince = (jdC - jd) * 24.0 * 60.0 + dt;
         sgp4(whichconst, satrec, tsince, ro, vo);
         teme2ecef(ro, vo, jdC, recef, vecef);
         ijk2ll(recef, latlongh);
